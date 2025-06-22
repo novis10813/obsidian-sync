@@ -36,6 +36,7 @@ class AttachmentService:
                 
             # Validate path format
             if not validate_attachment_path_format(att_path):
+                logger.error(f"[validate_attachments] Invalid attachment path format: {att_path}")
                 raise InvalidAttachmentPathError(att_path)
             
             # Extract components and generate normalized path

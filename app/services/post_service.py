@@ -61,18 +61,20 @@ class PostService:
         data_dict["postId"] = post_id
         
         # Process attachments
-        logger.debug(f"[upsert] Processing attachments: {data_dict.get('attachments', [])}")
+        logger.debug("[upsert] Processing attachments")
         attachments = data_dict.get("attachments", [])
         validated_attachments = self.attachment_service.validate_attachments(attachments)
+        logger.debug("[upsert] Validated attachments successfully")
         attachment_map = self.attachment_service.create_attachment_mapping(attachments, post_id)
+        logger.debug("[upsert] Attachment map successfully created")
         
         # Process content with image syntax conversion
-        logger.debug(f"[upsert] Processing content: {data_dict.get('content', '')}")
+        logger.debug("[upsert] Processing content")
         content = data_dict.get("content", "")
         processed_content = self.attachment_service.process_obsidian_image_syntax(content, attachment_map)
         
         # Save post content
-        logger.debug(f"[upsert] Saving post content: {data_dict.get('content', '')}")
+        logger.debug("[upsert] Saving post content")
         self.file_service.save_post_content(
             post_id=post_id,
             frontmatter_data=data_dict,
@@ -81,7 +83,7 @@ class PostService:
         )
         
         # Save attachments
-        logger.debug(f"[upsert] Saving attachments: {validated_attachments}")
+        logger.debug("[upsert] Saving attachments")
         self.attachment_service.save_attachments(validated_attachments, post_id)
         
         logger.info(f"[upsert] Successfully processed post: {post_id}")
