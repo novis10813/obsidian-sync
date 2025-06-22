@@ -1,0 +1,38 @@
+services:
+  obsidian-sync:
+    image: python:3.13-slim
+    container_name: obsidian-sync
+    working_dir: /app
+    ports:
+      - "${OBSIDIAN_SYNC_PORT:-1312}:1312"  # FastAPI 服務端口
+    volumes:
+      - .:/app  # 掛載整個專案目錄
+    environment:
+      # Obsidian Sync API 設定
+      - OBSIDIAN_SYNC_HOST=${OBSIDIAN_SYNC_HOST:-0.0.0.0}
+      - OBSIDIAN_SYNC_PORT=${OBSIDIAN_SYNC_PORT:-1312}
+      - OBSIDIAN_SYNC_LOG_LEVEL=${OBSIDIAN_SYNC_LOG_LEVEL:-INFO}
+      - OBSIDIAN_SYNC_CONTENT_ROOT=${OBSIDIAN_SYNC_CONTENT_ROOT:-/app/obsidian-content/content}
+      - OBSIDIAN_SYNC_STATIC_ROOT=${OBSIDIAN_SYNC_STATIC_ROOT:-/app/site/static}
+      - PYTHONPATH=/app
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y curl &&
+        pip install uv &&
+        uv sync &&
+        uv run uvicorn app.main:app --host ${OBSIDIAN_SYNC_HOST:-0.0.0.0} --port ${OBSIDIAN_SYNC_PORT:-1312}
+      "
+    user: "${UID:-1000}:${GID:-1000}"
+    networks:
+      - gateway_internal  # 連接到 gateway 的內部網路
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${OBSIDIAN_SYNC_PORT:-1312}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s  # 增加啟動時間，因為需要安裝依賴
+
+networks:
+  gateway_internal:
+    external: true  # 使用 gateway 的內部網路 
