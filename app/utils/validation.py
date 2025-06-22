@@ -23,13 +23,13 @@ def validate_required_frontmatter_fields(data: Dict[str, Any]) -> None:
 
 def validate_attachment_path_format(path: str) -> bool:
     """Validate attachment path format."""
-    pattern = r"media/([a-z0-9]+)/([\w\-_]+)/([\w\-_]+)-(\d{13})\.([a-z0-9]+)"
+    pattern = r"media/([a-z0-9]+)/([^/]+)/([^/]+)-(\d{13})\.([a-z0-9]+)"
     return bool(re.match(pattern, path.lower()))
 
 
 def extract_attachment_path_components(path: str) -> Dict[str, str]:
     """Extract components from attachment path."""
-    pattern = r"media/([a-z0-9]+)/([\w\-_]+)/([\w\-_]+)-(\d{13})\.([a-z0-9]+)"
+    pattern = r"media/([a-z0-9]+)/([^/]+)/([^/]+)-(\d{13})\.([a-z0-9]+)"
     match = re.match(pattern, path.lower())
     if not match:
         raise InvalidAttachmentPathError(f"Invalid attachment path format: {path}")
