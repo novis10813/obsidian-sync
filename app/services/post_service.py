@@ -66,7 +66,7 @@ class PostService:
         validated_attachments = self.attachment_service.validate_attachments(attachments)
         logger.debug("[upsert] Validated attachments successfully")
         attachment_map = self.attachment_service.create_attachment_mapping(attachments, post_id)
-        logger.debug("[upsert] Attachment map successfully created")
+        logger.debug(f"[upsert] Attachment map successfully created: {attachment_map}")
         
         # Process content with image syntax conversion
         logger.debug("[upsert] Processing content")

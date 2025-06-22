@@ -20,8 +20,8 @@ class Settings(BaseSettings):
     reload: bool = True
     
     # Path Settings
-    content_root: Path = Path("obsidian-content") / "content"
-    static_root: Path = Path("site") / "static"
+    content_root: Path = Path("/app/content")
+    static_root: Path = Path("/app/static")
     
     # Logging
     log_level: str = "DEBUG"

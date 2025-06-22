@@ -64,6 +64,7 @@ class AttachmentService:
                 
             try:
                 components = extract_attachment_path_components(att_path)
+                logger.debug(f"[create_attachment_mapping] Components: {components}")
                 ext = components["ext"]
                 timestamp = components["timestamp"]
                 file_ext = components["file_ext"]
